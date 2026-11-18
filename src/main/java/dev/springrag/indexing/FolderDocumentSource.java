@@ -54,6 +54,11 @@ public class FolderDocumentSource implements DocumentSource {
 	}
 
 	@Override
+	public String name() {
+		return "folder";
+	}
+
+	@Override
 	public List<SourceDocument> list() {
 		if (!Files.isDirectory(this.root)) {
 			log.warn("문서 폴더가 없습니다: {} (RAG_DOCS_PATH)", this.root);

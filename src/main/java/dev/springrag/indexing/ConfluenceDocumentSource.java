@@ -57,6 +57,11 @@ public class ConfluenceDocumentSource implements DocumentSource {
 	}
 
 	@Override
+	public String name() {
+		return "confluence";
+	}
+
+	@Override
 	public List<SourceDocument> list() {
 		List<SourceDocument> documents = new ArrayList<>();
 		for (String space : this.spaces) {

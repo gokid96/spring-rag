@@ -39,6 +39,11 @@ public class BookStackDocumentSource implements DocumentSource {
 	}
 
 	@Override
+	public String name() {
+		return "bookstack";
+	}
+
+	@Override
 	public List<SourceDocument> list() {
 		List<SourceDocument> documents = new ArrayList<>();
 		for (long shelf : this.shelves) {

@@ -7,7 +7,12 @@ import java.util.List;
  */
 public interface DocumentSource {
 
-	/** 이 출처의 모든 문서 */
+	/** 출처 이름. 색인 상태를 출처별로 나눌 때 씀 */
+	default String name() {
+		return getClass().getSimpleName();
+	}
+
+	/** 이 출처의 모든 문서. 다 받지 못하면 예외 (그 출처의 색인은 지우지 않음) */
 	List<SourceDocument> list();
 
 	/**

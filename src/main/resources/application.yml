@@ -69,7 +69,25 @@ management:
 
 rag:
   chat:
+    # 프롬프트에 넣는 문서 조각 수
     top-k: 5
+    # 후속 질문을 앞 대화를 넣은 질문으로 재작성해 검색 (LLM 호출 1회 추가)
+    rewrite: ${RAG_CHAT_REWRITE:true}
+  search:
+    vector-top-k: 20
+    # 키워드 검색 (하이브리드). 끄면 벡터 검색만
+    keyword:
+      enabled: ${RAG_KEYWORD_SEARCH:true}
+      top-k: 20
+    # RRF 로 합친 뒤 리랭커에 넘기는 수
+    candidates: 20
+  # 리랭커 (선택). RERANK_URL 비우면 끔 → RRF 순서 상위 top-k
+  #   api: tei (Hugging Face TEI) | cohere (Cohere · Jina · vLLM 형식, RERANK_MODEL 필요)
+  rerank:
+    url: ${RERANK_URL:}
+    api: ${RERANK_API:tei}
+    model: ${RERANK_MODEL:}
+    api-key: ${RERANK_API_KEY:}
   # 시스템 프롬프트. 회사마다 jar 밖 파일로: RAG_SYSTEM_PROMPT=file:/etc/rag/system.st
   prompt:
     system: ${RAG_SYSTEM_PROMPT:classpath:prompts/system.st}
@@ -91,8 +109,11 @@ rag:
     email: ${CONFLUENCE_EMAIL:}
     token: ${CONFLUENCE_TOKEN:}
     spaces: ${CONFLUENCE_SPACES:}
+  # 색인: 바뀐 문서만 다시 임베딩, 출처에서 사라진 문서 삭제
   index:
     on-startup: ${RAG_INDEX_ON_STARTUP:true}
-  # POST /admin/reindex 의 X-Admin-Token. 비우면 차단
+    # 예약 색인 (초 분 시 일 월 요일). "-" 면 끔
+    cron: ${RAG_INDEX_CRON:0 0 3 * * *}
+  # POST /admin/reindex 의 X-Admin-Token. 비우면 차단. ?full=true 면 전부 다시 임베딩
   admin:
     token: ${RAG_ADMIN_TOKEN:}
