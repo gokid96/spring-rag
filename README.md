@@ -59,6 +59,7 @@ curl -N localhost:8080/api/chat -H 'Content-Type: application/json' -d '{"questi
 - 켠 출처는 모두 함께 색인
 - 폴더: md · txt · html · pdf, 하위 폴더 포함. docx · pptx · xlsx · hwp 는 `build.gradle.kts` 의 `spring-ai-tika-document-reader` 주석 해제
 - Confluence: Cloud 는 REST API v2, Data Center 는 v1
+- BookStack · Confluence 호출 간격 `rag.bookstack.min-interval`(기본 400ms) · `rag.confluence.min-interval`(200ms), 429 · 5xx 는 재시도
 - 기타 출처 (Notion · DB 등): `DocumentSource` 구현 빈 추가
 - 색인: 기동 시 (`RAG_INDEX_ON_STARTUP`), 매일 03:00 (`RAG_INDEX_CRON`, `-` 면 끔), 수동
 - 수동: `curl -X POST localhost:8080/admin/reindex -H "X-Admin-Token: $RAG_ADMIN_TOKEN"`

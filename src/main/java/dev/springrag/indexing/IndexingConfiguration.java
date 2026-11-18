@@ -48,6 +48,7 @@ class IndexingConfiguration {
 		}
 		RestClient http = builder.baseUrl(props.baseUrl())
 			.defaultHeader(HttpHeaders.AUTHORIZATION, "Token " + props.token())
+			.requestInterceptor(new Throttle(props.minInterval()))
 			.build();
 		return new BookStackDocumentSource(http, props.shelves());
 	}
@@ -68,7 +69,10 @@ class IndexingConfiguration {
 			}
 			case DATACENTER -> "Bearer " + props.token();
 		};
-		RestClient http = builder.baseUrl(props.baseUrl()).defaultHeader(HttpHeaders.AUTHORIZATION, auth).build();
+		RestClient http = builder.baseUrl(props.baseUrl())
+			.defaultHeader(HttpHeaders.AUTHORIZATION, auth)
+			.requestInterceptor(new Throttle(props.minInterval()))
+			.build();
 		return new ConfluenceDocumentSource(http, props.baseUrl(), props.deployment(), props.spaces());
 	}
 
