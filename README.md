@@ -31,15 +31,23 @@ curl -N localhost:8080/api/chat -H 'Content-Type: application/json' -d '{"questi
 
 ## 데이터
 
-- 폴더: `RAG_DOCS_PATH` (기본 `./docs`), md · txt · html · pdf, 하위 폴더 포함
-- docx · pptx · xlsx · hwp: `build.gradle.kts` 의 `spring-ai-tika-document-reader` 주석 해제
-- 기타 출처 (위키 · DB 등): `DocumentSource` 구현 빈 추가
+| 출처 | 켜기 | 필요한 값 |
+| --- | --- | --- |
+| 폴더 (기본) | `RAG_DOCS_PATH` (기본 `./docs`) | 없음 |
+| BookStack | `BOOKSTACK_ENABLED=true` | `BOOKSTACK_BASE_URL` · `BOOKSTACK_TOKEN`(`id:secret`) · `BOOKSTACK_SHELVES` |
+| Confluence Cloud | `CONFLUENCE_ENABLED=true` | `CONFLUENCE_BASE_URL`(`https://<회사>.atlassian.net/wiki`) · `CONFLUENCE_EMAIL` · `CONFLUENCE_TOKEN` · `CONFLUENCE_SPACES` |
+| Confluence Data Center | 위 + `CONFLUENCE_DEPLOYMENT=datacenter` | `CONFLUENCE_BASE_URL` · `CONFLUENCE_TOKEN`(개인 액세스 토큰) · `CONFLUENCE_SPACES` |
+
+- 켠 출처는 모두 함께 색인
+- 폴더: md · txt · html · pdf, 하위 폴더 포함. docx · pptx · xlsx · hwp 는 `build.gradle.kts` 의 `spring-ai-tika-document-reader` 주석 해제
+- Confluence: Cloud 는 REST API v2, Data Center 는 v1
+- 기타 출처 (Notion · DB 등): `DocumentSource` 구현 빈 추가
 - 색인: 기동 시 자동 (`RAG_INDEX_ON_STARTUP`)
 - 재색인: `curl -X POST localhost:8080/admin/reindex -H "X-Admin-Token: $RAG_ADMIN_TOKEN"`
 
 ```java
 @Component
-class WikiSource implements DocumentSource {
+class NotionSource implements DocumentSource {
     public List<SourceDocument> list() { /* (id, 제목, 본문) 목록 */ }
 }
 ```
@@ -61,6 +69,6 @@ class WikiSource implements DocumentSource {
 ```text
 model     모델 연결
 chat      대화 메모리 → 벡터 검색 → LLM 스트리밍
-indexing  문서 출처 → 분할 → 벡터 저장소
+indexing  문서 출처 (폴더 · BookStack · Confluence) → 분할 → 벡터 저장소
 session   (미구현) 세션 · 검색 범위
 ```

@@ -77,6 +77,20 @@ rag:
   docs:
     enabled: ${RAG_DOCS_ENABLED:true}
     path: ${RAG_DOCS_PATH:./docs}
+  # 선택 출처: BookStack
+  bookstack:
+    enabled: ${BOOKSTACK_ENABLED:false}
+    base-url: ${BOOKSTACK_BASE_URL:}
+    token: ${BOOKSTACK_TOKEN:}
+    shelves: ${BOOKSTACK_SHELVES:}
+  # 선택 출처: Confluence (deployment: cloud | datacenter)
+  confluence:
+    enabled: ${CONFLUENCE_ENABLED:false}
+    deployment: ${CONFLUENCE_DEPLOYMENT:cloud}
+    base-url: ${CONFLUENCE_BASE_URL:}
+    email: ${CONFLUENCE_EMAIL:}
+    token: ${CONFLUENCE_TOKEN:}
+    spaces: ${CONFLUENCE_SPACES:}
   index:
     on-startup: ${RAG_INDEX_ON_STARTUP:true}
   # POST /admin/reindex 의 X-Admin-Token. 비우면 차단
