@@ -1,0 +1,16 @@
+# OpenAI 호환 게이트웨이 (Bifrost 등). 주소 · 키 · 모델 이름은 게이트웨이 기준
+spring:
+  ai:
+    openai:
+      chat:
+        base-url: ${CHAT_BASE_URL:${LLM_BASE_URL:http://localhost:8080/v1}}
+        model: ${CHAT_MODEL:openai/gpt-4.1-mini}
+      embedding:
+        base-url: ${EMBEDDING_BASE_URL:${LLM_BASE_URL:http://localhost:8080/v1}}
+        model: ${EMBEDDING_MODEL:bge-m3}
+    vectorstore:
+      pgvector:
+        dimensions: ${EMBEDDING_DIMENSIONS:1024}
+  flyway:
+    placeholders:
+      embedding_dimensions: ${EMBEDDING_DIMENSIONS:1024}

@@ -1,0 +1,16 @@
+# OpenAI API. LLM_API_KEY 필요
+spring:
+  ai:
+    openai:
+      chat:
+        base-url: ${CHAT_BASE_URL:https://api.openai.com/v1}
+        model: ${CHAT_MODEL:gpt-4.1-mini}
+      embedding:
+        base-url: ${EMBEDDING_BASE_URL:https://api.openai.com/v1}
+        model: ${EMBEDDING_MODEL:text-embedding-3-small}
+    vectorstore:
+      pgvector:
+        dimensions: ${EMBEDDING_DIMENSIONS:1536}
+  flyway:
+    placeholders:
+      embedding_dimensions: ${EMBEDDING_DIMENSIONS:1536}

@@ -1,0 +1,18 @@
+# 로컬 Ollama (ollama pull llama3.1 · ollama pull bge-m3). 키 불필요
+spring:
+  ai:
+    openai:
+      chat:
+        base-url: ${CHAT_BASE_URL:http://localhost:11434/v1}
+        api-key: ${CHAT_API_KEY:ollama}
+        model: ${CHAT_MODEL:llama3.1}
+      embedding:
+        base-url: ${EMBEDDING_BASE_URL:http://localhost:11434/v1}
+        api-key: ${EMBEDDING_API_KEY:ollama}
+        model: ${EMBEDDING_MODEL:bge-m3}
+    vectorstore:
+      pgvector:
+        dimensions: ${EMBEDDING_DIMENSIONS:1024}
+  flyway:
+    placeholders:
+      embedding_dimensions: ${EMBEDDING_DIMENSIONS:1024}

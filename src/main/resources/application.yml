@@ -1,0 +1,84 @@
+# 기본 설정. 값은 작업 폴더 .env 또는 OS 환경 변수.
+#
+# 모델 서버 교체: 프로필 (application-<이름>.yml)
+#   --spring.profiles.active=openai    외부 API (OpenAI)
+#   --spring.profiles.active=bifrost   사내 게이트웨이 (Bifrost 등 OpenAI 호환)
+#   --spring.profiles.active=ollama    이 PC 의 Ollama
+# 프로필 없이 LLM_* 만으로도 가능. 채팅 · 임베딩 분리: CHAT_* · EMBEDDING_*
+spring:
+  application:
+    name: spring-rag-starter
+  config:
+    import: optional:file:.env[.properties]
+  threads:
+    virtual:
+      enabled: true
+  mvc:
+    async:
+      request-timeout: 180s
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/rag}
+    username: ${SPRING_DATASOURCE_USERNAME:rag}
+    password: ${SPRING_DATASOURCE_PASSWORD:rag-local-only}
+    hikari:
+      connection-init-sql: SET search_path TO rag_starter, public
+  flyway:
+    schemas: rag_starter
+    placeholders:
+      embedding_dimensions: ${EMBEDDING_DIMENSIONS:1536}
+
+  ai:
+    openai:
+      # 채팅 · 임베딩 공통 (따로 주지 않으면 이 값을 씀)
+      base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+      api-key: ${LLM_API_KEY:not-needed}
+      timeout: ${LLM_TIMEOUT:60s}
+      chat:
+        base-url: ${CHAT_BASE_URL:${LLM_BASE_URL:https://api.openai.com/v1}}
+        api-key: ${CHAT_API_KEY:${LLM_API_KEY:not-needed}}
+        model: ${CHAT_MODEL:gpt-4.1-mini}
+        max-retries: 1
+      embedding:
+        base-url: ${EMBEDDING_BASE_URL:${LLM_BASE_URL:https://api.openai.com/v1}}
+        api-key: ${EMBEDDING_API_KEY:${LLM_API_KEY:not-needed}}
+        model: ${EMBEDDING_MODEL:text-embedding-3-small}
+        metadata-mode: NONE
+    model:
+      image: none
+      audio:
+        speech: none
+        transcription: none
+      moderation: none
+    vectorstore:
+      pgvector:
+        schema-name: rag_starter
+        dimensions: ${EMBEDDING_DIMENSIONS:1536}
+        initialize-schema: false
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+rag:
+  chat:
+    top-k: 5
+  # 시스템 프롬프트. 회사마다 jar 밖 파일로: RAG_SYSTEM_PROMPT=file:/etc/rag/system.st
+  prompt:
+    system: ${RAG_SYSTEM_PROMPT:classpath:prompts/system.st}
+  # 기본 문서 출처: 폴더 하나 (md · txt · html · pdf. docx · hwp 등은 build.gradle.kts 에서 Tika 를 켜면)
+  docs:
+    enabled: ${RAG_DOCS_ENABLED:true}
+    path: ${RAG_DOCS_PATH:./docs}
+  index:
+    on-startup: ${RAG_INDEX_ON_STARTUP:true}
+  # POST /admin/reindex 의 X-Admin-Token. 비우면 차단
+  admin:
+    token: ${RAG_ADMIN_TOKEN:}
