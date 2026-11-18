@@ -1,4 +1,4 @@
-package dev.ragstarter.indexing;
+package dev.springrag.indexing;
 
 import java.util.HashMap;
 import java.util.List;

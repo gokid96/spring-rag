@@ -7,7 +7,7 @@
 # 프로필 없이 LLM_* 만으로도 가능. 채팅 · 임베딩 분리: CHAT_* · EMBEDDING_*
 spring:
   application:
-    name: spring-rag-starter
+    name: spring-rag
   config:
     import: optional:file:.env[.properties]
   threads:
@@ -22,9 +22,9 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:rag}
     password: ${SPRING_DATASOURCE_PASSWORD:rag-local-only}
     hikari:
-      connection-init-sql: SET search_path TO rag_starter, public
+      connection-init-sql: SET search_path TO spring_rag, public
   flyway:
-    schemas: rag_starter
+    schemas: spring_rag
     placeholders:
       embedding_dimensions: ${EMBEDDING_DIMENSIONS:1536}
 
@@ -52,7 +52,7 @@ spring:
       moderation: none
     vectorstore:
       pgvector:
-        schema-name: rag_starter
+        schema-name: spring_rag
         dimensions: ${EMBEDDING_DIMENSIONS:1536}
         initialize-schema: false
     chat:

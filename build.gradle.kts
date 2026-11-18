@@ -5,7 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
-group = "dev.ragstarter"
+group = "dev.springrag"
 version = "0.1.0-SNAPSHOT"
 
 java {

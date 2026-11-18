@@ -1,4 +1,4 @@
-package dev.ragstarter.indexing;
+package dev.springrag.indexing;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;

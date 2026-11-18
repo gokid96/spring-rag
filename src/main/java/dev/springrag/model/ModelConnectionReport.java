@@ -1,4 +1,4 @@
-package dev.ragstarter.model;
+package dev.springrag.model;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

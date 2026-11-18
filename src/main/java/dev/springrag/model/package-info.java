@@ -3,4 +3,4 @@
  * ({@code application-*.yml}). 채팅 · 임베딩 서버 분리 가능.
  */
 @org.springframework.modulith.ApplicationModule(allowedDependencies = {})
-package dev.ragstarter.model;
+package dev.springrag.model;

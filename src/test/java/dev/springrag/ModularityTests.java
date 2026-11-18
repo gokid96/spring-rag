@@ -1,4 +1,4 @@
-package dev.ragstarter;
+package dev.springrag;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ class ModularityTests {
 
 	@Test
 	void verifiesModuleBoundaries() {
-		ApplicationModules.of(SpringRagStarterApplication.class).verify();
+		ApplicationModules.of(SpringRagApplication.class).verify();
 	}
 
 }

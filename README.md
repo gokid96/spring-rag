@@ -27,7 +27,7 @@ curl -N localhost:8080/api/chat -H 'Content-Type: application/json' -d '{"questi
 
 - OpenAI 호환 서버 모두 가능 (vLLM · LM Studio · LiteLLM · OpenRouter)
 - 채팅 · 임베딩 서버 분리: `CHAT_BASE_URL` · `CHAT_API_KEY` / `EMBEDDING_BASE_URL` · `EMBEDDING_API_KEY`
-- 임베딩 차원 변경 시: `EMBEDDING_DIMENSIONS` 수정 후 `DROP SCHEMA rag_starter CASCADE;` · 재기동
+- 임베딩 차원 변경 시: `EMBEDDING_DIMENSIONS` 수정 후 `DROP SCHEMA spring_rag CASCADE;` · 재기동
 
 ## 데이터
 
@@ -64,11 +64,45 @@ class NotionSource implements DocumentSource {
 | `POST /admin/reindex` | 재색인 (`X-Admin-Token`) |
 | `GET /actuator/health` | 상태 |
 
+## 아키텍처
+
+```mermaid
+flowchart LR
+    subgraph 출처
+        F[폴더]
+        B[BookStack]
+        C[Confluence]
+    end
+    subgraph 앱["Spring Boot (spring-rag)"]
+        I[indexing<br/>분할 · 임베딩]
+        Q[chat<br/>대화 메모리 → 검색 → 답변]
+    end
+    subgraph AI["AI (OpenAI 호환)"]
+        E[임베딩 모델]
+        L[채팅 모델]
+    end
+    DB[(PostgreSQL<br/>pgvector)]
+    U[사용자] -- POST /api/chat --> Q
+    F & B & C --> I
+    I -- 임베딩 --> E
+    I -- 저장 --> DB
+    Q -- 질문 임베딩 --> E
+    Q -- 유사 문서 검색 --> DB
+    Q -- 문서 + 질문 --> L
+    L -- SSE 스트리밍 --> U
+```
+
+- 색인: 출처 → 분할 → 임베딩 → `vector_store`
+- 질문: 질문 임베딩 → 유사 문서 상위 N → 문서 + 질문 + 이전 대화를 LLM 에 → 답변 스트리밍
+- 대화 기록: `spring_ai_chat_memory`
+- DB 스키마: `spring_rag` (Flyway)
+
 ## 구조
 
 ```text
-model     모델 연결
-chat      대화 메모리 → 벡터 검색 → LLM 스트리밍
-indexing  문서 출처 (폴더 · BookStack · Confluence) → 분할 → 벡터 저장소
-session   (미구현) 세션 · 검색 범위
+dev.springrag
+├─ model     모델 연결 (기동 로그)
+├─ chat      POST /api/chat, 대화 메모리 → 벡터 검색 → LLM 스트리밍
+├─ indexing  문서 출처 (폴더 · BookStack · Confluence) → 분할 → 벡터 저장소, POST /admin/reindex
+└─ session   (미구현) 세션 · 검색 범위
 ```

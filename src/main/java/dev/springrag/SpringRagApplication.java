@@ -1,4 +1,4 @@
-package dev.ragstarter;
+package dev.springrag;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,10 +14,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * </pre>
  */
 @SpringBootApplication
-public class SpringRagStarterApplication {
+public class SpringRagApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringRagStarterApplication.class, args);
+		SpringApplication.run(SpringRagApplication.class, args);
 	}
 
 }

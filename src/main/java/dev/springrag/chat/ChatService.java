@@ -1,4 +1,4 @@
-package dev.ragstarter.chat;
+package dev.springrag.chat;
 
 import reactor.core.publisher.Flux;
 

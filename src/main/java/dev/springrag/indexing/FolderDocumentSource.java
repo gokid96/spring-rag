@@ -1,4 +1,4 @@
-package dev.ragstarter.indexing;
+package dev.springrag.indexing;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

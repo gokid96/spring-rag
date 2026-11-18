@@ -1,4 +1,4 @@
-package dev.ragstarter.chat;
+package dev.springrag.chat;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
